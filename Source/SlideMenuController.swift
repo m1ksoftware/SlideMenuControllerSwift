@@ -172,7 +172,7 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
         super.viewDidLoad()
         edgesForExtendedLayout = UIRectEdge.None
     }
-    
+            
     public override func viewWillLayoutSubviews() {
         // topLayoutGuideの値が確定するこのタイミングで各種ViewControllerをセットする
         setUpViewController(mainContainerView, targetViewController: mainViewController)
@@ -184,6 +184,7 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
         setOpenWindowLevel()
         
         //leftViewControllerのviewWillAppearを呼ぶため
+        mainViewController?.beginAppearanceTransition(false, animated: true)
         leftViewController?.beginAppearanceTransition(isLeftHidden(), animated: true)
         openLeftWithVelocity(0.0)
         
@@ -200,6 +201,7 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     
     public override func closeLeft() {
         leftViewController?.beginAppearanceTransition(isLeftHidden(), animated: true)
+        mainViewController?.beginAppearanceTransition(true, animated: true)
         closeLeftWithVelocity(0.0)
         setCloseWindowLebel()
     }
@@ -324,6 +326,7 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
                 LeftPanState.wasHiddenAtStartOfPan = isLeftHidden()
                 
                 if SlideMenuOptions.mainContainerViewAlwaysOnTop && SlideMenuOptions.slidingMode == SlideMenuOptions.SlidingMode.Standard {
+                    leftViewController?.beginAppearanceTransition(LeftPanState.wasHiddenAtStartOfPan, animated: true)
                     mainViewController?.beginAppearanceTransition(LeftPanState.wasHiddenAtStartOfPan, animated: true)
                 } else {
                     leftViewController?.beginAppearanceTransition(LeftPanState.wasHiddenAtStartOfPan, animated: true)
@@ -357,7 +360,7 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
                 if panInfo.action == .Open {
                     if !LeftPanState.wasHiddenAtStartOfPan {
                         leftViewController?.beginAppearanceTransition(true, animated: true)
-                        mainViewController?.beginAppearanceTransition(true, animated: true)
+                        mainViewController?.beginAppearanceTransition(false, animated: true)
                     }
                     openLeftWithVelocity(panInfo.velocity)
                     track(.FlickOpen)
@@ -365,7 +368,7 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
                 } else {
                     if LeftPanState.wasHiddenAtStartOfPan {
                         leftViewController?.beginAppearanceTransition(false, animated: true)
-                        mainViewController?.beginAppearanceTransition(false, animated: true)
+                        mainViewController?.beginAppearanceTransition(true, animated: true)
                     }
                     closeLeftWithVelocity(panInfo.velocity)
                     setCloseWindowLebel()
