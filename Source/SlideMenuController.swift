@@ -65,6 +65,8 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     public var rightViewController: UIViewController?
     public var rightPanGesture: UIPanGestureRecognizer?
     public var rightTapGesture: UITapGestureRecognizer?
+
+    private var allGestureEnabled: Bool = true
     
     public required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
@@ -293,6 +295,10 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     
     func handleLeftPanGesture(panGesture: UIPanGestureRecognizer) {
         
+        if !allGestureEnabled {
+            return
+        }
+        
         if !isTagetViewController() {
             return
         }
@@ -389,6 +395,10 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
     }
     
     func handleRightPanGesture(panGesture: UIPanGestureRecognizer) {
+        
+        if !allGestureEnabled {
+            return
+        }
         
         if !isTagetViewController() {
             return
@@ -953,9 +963,21 @@ public class SlideMenuController: UIViewController, UIGestureRecognizerDelegate 
         enableContentInteraction()
     }
     
+    public func disableAllGesture() {
+        allGestureEnabled = false
+    }
+    
+    public func enableAllGesture() {
+        allGestureEnabled = true
+    }
+    
     //pragma mark – UIGestureRecognizerDelegate
     public func gestureRecognizer(gestureRecognizer: UIGestureRecognizer, shouldReceiveTouch touch: UITouch) -> Bool {
-    
+        
+        if !allGestureEnabled {
+            return false
+        }
+        
         let point: CGPoint = touch.locationInView(view)
         
         if gestureRecognizer == leftPanGesture {
